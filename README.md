@@ -15,6 +15,7 @@ social links, and SEO settings live in one typed configuration file:
 
 Images and downloadable files live under `public/`.
 
+
 ## Local development
 
 ```bash
