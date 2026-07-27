@@ -1,19 +1,21 @@
 import type { PortfolioConfig } from "@/types/portfolio";
 
+const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export const portfolioConfig: PortfolioConfig = {
   identity: {
     name: "Vigneshwaran N",
     shortName: "VN",
     role: "Software Development Engineer",
     email: "palanivig12@gmail.com",
-    resumeUrl: "/resume/vigneshwaran-resume.pdf",
-    avatarUrl: "/images/avatar-vigneshwaran-integrated.jpg",
+    resumeUrl: `${publicBasePath}/resume/vigneshwaran-resume.pdf`,
+    avatarUrl: `${publicBasePath}/images/avatar-vigneshwaran-integrated.jpg`,
   },
   seo: {
     title: "Vigneshwaran N - Software Engineer",
     description:
       "Software engineer building reliable distributed systems and exploring practical Agentic AI.",
-    url: "https://edith-v.github.io",
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://edith-v.github.io",
   },
   lenses: {
     systems: {
