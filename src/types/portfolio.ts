@@ -1,5 +1,13 @@
 export type PortfolioLens = "systems" | "ai";
 
+export type PortfolioSection =
+  | "impact"
+  | "projects"
+  | "experience"
+  | "skills"
+  | "credentials"
+  | "contact";
+
 export type CredentialProvider =
   | "linkedin"
   | "master-of-project-academy"
@@ -83,6 +91,12 @@ export interface ProjectEntry {
   status: "live" | "case-study" | "coming-soon";
 }
 
+export interface ComingSoonContent {
+  eyebrow: string;
+  title: string;
+  description: string;
+}
+
 export interface PortfolioConfig {
   identity: {
     name: string;
@@ -101,6 +115,7 @@ export interface PortfolioConfig {
   lenses: Record<PortfolioLens, LensContent>;
   socials: SocialLink[];
   navigation: Array<{ label: string; href: string }>;
+  comingSoon?: Partial<Record<PortfolioSection, ComingSoonContent>>;
   impact: ImpactMetric[];
   projects: ProjectEntry[];
   experience: ExperienceEntry[];

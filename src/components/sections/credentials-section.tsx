@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { SectionContainer } from "@/components/layout/section-container";
+import { ComingSoonBanner } from "@/components/shared/coming-soon-banner";
 import { CredentialProviderMark } from "@/components/shared/credential-provider-mark";
 import { InteractiveSurface } from "@/components/shared/interactive-surface";
 import { Reveal } from "@/components/shared/reveal";
@@ -84,6 +85,13 @@ export function CredentialsSection() {
           description="Provider branding stays consistent across the vault while every credential keeps its own title, year, certificate image, and verification URL."
         />
         <WordStage text="credentials" align="end" />
+
+        {portfolioConfig.comingSoon?.credentials ? (
+          <ComingSoonBanner
+            {...portfolioConfig.comingSoon.credentials}
+            className="mb-8"
+          />
+        ) : null}
 
         <div
           className="credential-filters"

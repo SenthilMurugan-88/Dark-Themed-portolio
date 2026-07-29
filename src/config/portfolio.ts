@@ -56,6 +56,20 @@ export const portfolioConfig: PortfolioConfig = {
     { label: "Credentials", href: "#credentials" },
     { label: "Contact", href: "#contact" },
   ],
+  comingSoon: {
+    projects: {
+      eyebrow: "Portfolio update",
+      title: "Project case studies are being prepared.",
+      description:
+        "The showcase is ready for architecture notes, outcomes, repositories, and media as each project is finalized.",
+    },
+    credentials: {
+      eyebrow: "Credential update",
+      title: "Verified certificates are on the way.",
+      description:
+        "Provider placeholders are ready now. Certificate titles, images, dates, and verification links can be added when available.",
+    },
+  },
   impact: [
     {
       value: "15+",

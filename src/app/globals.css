@@ -557,16 +557,153 @@
     color: var(--color-accent);
   }
 
+  .coming-soon-banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    overflow: hidden;
+    padding: var(--space-md);
+    border: 1px solid
+      color-mix(in srgb, var(--color-accent) 38%, var(--color-border));
+    border-inline-start: 3px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    background:
+      linear-gradient(
+        120deg,
+        color-mix(in srgb, var(--color-accent) 9%, transparent),
+        transparent 52%
+      ),
+      var(--color-surface);
+  }
+
+  .coming-soon-banner-shell {
+    container-type: inline-size;
+  }
+
+  .coming-soon-banner::after {
+    position: absolute;
+    inset-block-start: -3rem;
+    inset-inline-end: -2rem;
+    width: 9rem;
+    aspect-ratio: 1;
+    border: 1px solid
+      color-mix(in srgb, var(--color-accent-secondary) 22%, transparent);
+    border-radius: 50%;
+    content: "";
+    pointer-events: none;
+  }
+
+  .coming-soon-banner__icon {
+    display: grid;
+    width: 3rem;
+    aspect-ratio: 1;
+    flex: none;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  .coming-soon-banner__content {
+    min-width: 0;
+    flex: 1 1 16rem;
+  }
+
+  .coming-soon-banner__badge {
+    position: relative;
+    display: inline-flex;
+    min-block-size: 2.5rem;
+    align-items: center;
+    gap: 0.5rem;
+    margin-inline-start: auto;
+    padding-inline: 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface-raised);
+    color: var(--color-foreground);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  @container (max-width: 30rem) {
+    .coming-soon-banner {
+      gap: var(--space-sm);
+    }
+
+    .coming-soon-banner__icon {
+      display: none;
+    }
+
+    .coming-soon-banner__content {
+      flex-basis: 100%;
+    }
+
+    .coming-soon-banner__badge {
+      margin-inline-start: 0;
+    }
+  }
+
+  .project-showcase {
+    container-type: inline-size;
+  }
+
+  .project-showcase__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    margin-block-end: var(--space-sm);
+  }
+
+  .project-showcase__button {
+    display: grid;
+    width: 2.75rem;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-foreground);
+    transition:
+      border-color var(--duration-fast) ease,
+      color var(--duration-fast) ease,
+      transform var(--duration-fast) var(--ease-out);
+  }
+
   .project-list {
     display: grid;
+    grid-auto-rows: 100%;
+    block-size: clamp(34rem, 70svh, 38rem);
     gap: 1px;
+    overflow-y: auto;
+    overscroll-behavior-block: contain;
     background: var(--color-border);
     border: 1px solid var(--color-border);
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    scrollbar-color: var(--color-border) transparent;
+    scrollbar-width: thin;
+  }
+
+  .project-list:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 0.25rem;
+  }
+
+  .project-slide {
+    block-size: 100%;
+    min-block-size: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
   .project-row {
     display: grid;
-    min-block-size: 27rem;
+    block-size: 100%;
+    min-block-size: 0;
     background: var(--color-canvas);
   }
 
@@ -990,6 +1127,12 @@
       border-color: color-mix(in srgb, var(--color-accent) 48%, var(--color-border));
       transform: translateY(-3px);
     }
+
+    .project-showcase__button:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      transform: translateY(-2px);
+    }
   }
 
   @media (hover: none), (pointer: coarse) {
@@ -1023,6 +1166,17 @@
     .contact-primary,
     .contact-education {
       padding: 1.5rem;
+    }
+
+    .project-row__visual {
+      min-block-size: 13rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-list,
+    .credential-grid {
+      scroll-behavior: auto;
     }
   }
 
