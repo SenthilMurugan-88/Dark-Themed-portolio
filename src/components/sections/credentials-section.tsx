@@ -1,11 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { ArrowUpRight, Award, Expand, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Expand,
+  X,
+} from "lucide-react";
 
 import { SectionContainer } from "@/components/layout/section-container";
+import { CredentialProviderMark } from "@/components/shared/credential-provider-mark";
 import { InteractiveSurface } from "@/components/shared/interactive-surface";
 import { Reveal } from "@/components/shared/reveal";
 import { RollText } from "@/components/shared/roll-text";
@@ -29,12 +36,39 @@ export function CredentialsSection() {
     [],
   );
   const [activeCategory, setActiveCategory] = useState("All");
+  const carouselRef = useRef<HTMLDivElement>(null);
   const visibleCertifications =
     activeCategory === "All"
       ? portfolioConfig.certifications
       : portfolioConfig.certifications.filter(
           (certification) => certification.category === activeCategory,
         );
+
+  const selectCategory = (category: string) => {
+    setActiveCategory(category);
+    carouselRef.current?.scrollTo({ left: 0, behavior: "auto" });
+  };
+
+  const scrollCarousel = (direction: -1 | 1) => {
+    const carousel = carouselRef.current;
+
+    if (!carousel) {
+      return;
+    }
+
+    const firstSlide =
+      carousel.querySelector<HTMLElement>(".credential-slide");
+    const gap = Number.parseFloat(getComputedStyle(carousel).columnGap) || 0;
+    const distance = (firstSlide?.offsetWidth ?? carousel.clientWidth) + gap;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    carousel.scrollBy({
+      left: distance * direction,
+      behavior: reduceMotion ? "auto" : "smooth",
+    });
+  };
 
   return (
     <InteractiveSurface
@@ -47,7 +81,7 @@ export function CredentialsSection() {
           eyebrow="Credential vault"
           number="06"
           title="Structured learning, kept in motion."
-          description="Toggle between credential tracks as the vault grows. Add a category, image, or verification URL in the configuration and the interface adapts automatically."
+          description="Provider branding stays consistent across the vault while every credential keeps its own title, year, certificate image, and verification URL."
         />
         <WordStage text="credentials" align="end" />
 
@@ -70,7 +104,7 @@ export function CredentialsSection() {
                 key={category}
                 type="button"
                 aria-pressed={active}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => selectCategory(category)}
                 className={cn(
                   "roll-trigger mono inline-flex min-h-11 shrink-0 items-center gap-3 rounded-full border px-4 text-[0.65rem] uppercase tracking-[0.1em] transition-colors",
                   active
@@ -94,118 +128,182 @@ export function CredentialsSection() {
           })}
         </div>
 
-        <div className="credential-grid">
-          {visibleCertifications.map((certification, index) => {
-            const card = (
-              <article className="credential-card group">
-                <div className="flex items-start justify-between gap-4">
-                  <span className="credential-card__icon">
-                    <Award aria-hidden="true" className="size-6" />
-                  </span>
-                  <span className="mono text-[0.62rem] uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
-                    Certificate / 0{index + 1}
-                  </span>
-                </div>
+        <div className="credential-carousel">
+          <div className="flex items-center justify-between gap-4">
+            <p className="mono text-[0.62rem] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+              Drag, swipe, or use arrows
+            </p>
+            {visibleCertifications.length > 1 ? (
+              <div
+                className="flex shrink-0 items-center gap-2"
+                aria-label="Credential carousel controls"
+              >
+                <button
+                  type="button"
+                  aria-label="Show previous credential"
+                  aria-controls="credential-carousel-track"
+                  onClick={() => scrollCarousel(-1)}
+                  className="grid size-11 place-items-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-foreground)]"
+                >
+                  <ArrowLeft aria-hidden="true" className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Show next credential"
+                  aria-controls="credential-carousel-track"
+                  onClick={() => scrollCarousel(1)}
+                  className="grid size-11 place-items-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-foreground)]"
+                >
+                  <ArrowRight aria-hidden="true" className="size-4" />
+                </button>
+              </div>
+            ) : null}
+          </div>
 
-                {certification.image ? (
-                  <div className="relative mt-7 aspect-[4/3] overflow-hidden rounded-2xl border border-[var(--border)]">
-                    <Image
-                      src={certification.image}
-                      alt={`${certification.title} certificate`}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 33vw"
-                      className="object-cover"
+          <div
+            id="credential-carousel-track"
+            ref={carouselRef}
+            className="credential-grid"
+            role="region"
+            aria-roledescription="carousel"
+            aria-label={`${activeCategory} credentials`}
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                scrollCarousel(-1);
+              }
+              if (event.key === "ArrowRight") {
+                event.preventDefault();
+                scrollCarousel(1);
+              }
+            }}
+          >
+            {visibleCertifications.map((certification, index) => {
+              const card = (
+                <article className="credential-card group">
+                  <div className="flex items-start justify-between gap-4">
+                    <CredentialProviderMark
+                      provider={certification.provider}
+                      compact
                     />
+                    <span className="mono text-[0.62rem] uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+                      Certificate / 0{index + 1}
+                    </span>
                   </div>
-                ) : (
-                  <div
-                    className="mt-8 flex h-24 items-center gap-2"
-                    aria-hidden="true"
-                  >
-                    {[0, 1, 2, 3, 4, 5].map((bar) => (
-                      <span
-                        key={bar}
-                        className="w-1.5 rounded-full bg-[var(--lilac)]"
-                        style={{ height: `${28 + ((bar * 17) % 56)}%` }}
-                      />
-                    ))}
-                  </div>
-                )}
 
-                <div className="mt-auto pt-8">
-                  <p className="mono text-xs uppercase tracking-[0.1em] text-[var(--lilac-dark)]">
-                    {certification.category} / {certification.year}
-                  </p>
-                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em]">
-                    {certification.title}
-                  </h3>
-                  {certification.issuer ? (
-                    <p className="mt-3 text-sm text-[var(--muted-foreground)]">
-                      {certification.issuer}
-                    </p>
-                  ) : null}
                   {certification.image ? (
-                    <p className="mt-5 flex items-center gap-2 text-sm font-semibold text-[var(--foreground)]">
-                      Inspect credential
-                      <Expand aria-hidden="true" className="size-4" />
-                    </p>
-                  ) : null}
-                </div>
-              </article>
-            );
+                    <div className="relative mt-7 aspect-[4/3] overflow-hidden rounded-2xl border border-[var(--border)]">
+                      <Image
+                        src={certification.image}
+                        alt={`${certification.title} certificate`}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 33vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <CredentialProviderMark
+                      provider={certification.provider}
+                    />
+                  )}
 
-            return (
-              <Reveal key={certification.title} delay={index * 0.06}>
-                {certification.image ? (
-                  <Dialog.Root>
-                    <Dialog.Trigger asChild>
-                      <button type="button" className="block w-full">
-                        {card}
-                      </button>
-                    </Dialog.Trigger>
-                    <Dialog.Portal>
-                      <Dialog.Overlay className="fixed inset-0 z-[var(--z-dialog-backdrop)] bg-[var(--graphite-dark)]/80 backdrop-blur-sm" />
-                      <Dialog.Content className="fixed left-1/2 top-1/2 z-[var(--z-dialog)] w-[min(92vw,64rem)] -translate-x-1/2 -translate-y-1/2 rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-4 shadow-2xl sm:p-6">
-                        <div className="mb-4 flex items-center justify-between gap-4">
-                          <Dialog.Title className="text-lg font-semibold">
-                            {certification.title}
-                          </Dialog.Title>
-                          <Dialog.Close
-                            aria-label="Close certificate"
-                            className="grid size-10 place-items-center rounded-full border border-[var(--border)]"
+                  <div className="mt-auto pt-8">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="mono text-xs uppercase tracking-[0.1em] text-[var(--lilac-dark)]">
+                        {certification.category} / {certification.year}
+                      </p>
+                      {certification.placeholder ? (
+                        <span className="mono rounded-full border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-2 py-1 text-[0.55rem] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                          Placeholder
+                        </span>
+                      ) : null}
+                    </div>
+                    <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em]">
+                      {certification.title}
+                    </h3>
+                    {certification.issuer ? (
+                      <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+                        {certification.issuer}
+                      </p>
+                    ) : null}
+                    {certification.image ? (
+                      <p className="mt-5 flex items-center gap-2 text-sm font-semibold text-[var(--foreground)]">
+                        Inspect credential
+                        <Expand aria-hidden="true" className="size-4" />
+                      </p>
+                    ) : null}
+                  </div>
+                </article>
+              );
+
+              return (
+                <div
+                  key={`${certification.provider}-${certification.title}`}
+                  className="credential-slide"
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`${index + 1} of ${visibleCertifications.length}: ${certification.title}`}
+                >
+                  <Reveal delay={index * 0.06}>
+                    {certification.image ? (
+                      <Dialog.Root>
+                        <Dialog.Trigger asChild>
+                          <button
+                            type="button"
+                            className="block h-full w-full text-start"
                           >
-                            <X aria-hidden="true" className="size-4" />
-                          </Dialog.Close>
-                        </div>
-                        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[var(--muted)]">
-                          <Image
-                            src={certification.image}
-                            alt={`${certification.title} certificate`}
-                            fill
-                            sizes="92vw"
-                            className="object-contain"
-                          />
-                        </div>
-                      </Dialog.Content>
-                    </Dialog.Portal>
-                  </Dialog.Root>
-                ) : (
-                  card
-                )}
-                {certification.verificationUrl ? (
-                  <a
-                    href={certification.verificationUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="roll-trigger mt-3 inline-flex items-center gap-2 px-2 text-xs font-semibold text-[var(--graphite)]"
-                  >
-                    <RollText>Verify online</RollText>
-                    <ArrowUpRight aria-hidden="true" className="size-3.5" />
-                  </a>
-                ) : null}
-              </Reveal>
-            );
-          })}
+                            {card}
+                          </button>
+                        </Dialog.Trigger>
+                        <Dialog.Portal>
+                          <Dialog.Overlay className="fixed inset-0 z-[var(--z-dialog-backdrop)] bg-[var(--graphite-dark)]/80 backdrop-blur-sm" />
+                          <Dialog.Content className="fixed left-1/2 top-1/2 z-[var(--z-dialog)] w-[min(92vw,64rem)] -translate-x-1/2 -translate-y-1/2 rounded-[2rem] border border-[var(--border)] bg-[var(--card)] p-4 shadow-2xl sm:p-6">
+                            <div className="mb-4 flex items-center justify-between gap-4">
+                              <Dialog.Title className="text-lg font-semibold">
+                                {certification.title}
+                              </Dialog.Title>
+                              <Dialog.Close
+                                aria-label="Close certificate"
+                                className="grid size-10 place-items-center rounded-full border border-[var(--border)]"
+                              >
+                                <X aria-hidden="true" className="size-4" />
+                              </Dialog.Close>
+                            </div>
+                            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[var(--muted)]">
+                              <Image
+                                src={certification.image}
+                                alt={`${certification.title} certificate`}
+                                fill
+                                sizes="92vw"
+                                className="object-contain"
+                              />
+                            </div>
+                          </Dialog.Content>
+                        </Dialog.Portal>
+                      </Dialog.Root>
+                    ) : (
+                      card
+                    )}
+                    {certification.verificationUrl ? (
+                      <a
+                        href={certification.verificationUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="roll-trigger mt-3 inline-flex items-center gap-2 px-2 text-xs font-semibold text-[var(--graphite)]"
+                      >
+                        <RollText>Verify online</RollText>
+                        <ArrowUpRight
+                          aria-hidden="true"
+                          className="size-3.5"
+                        />
+                      </a>
+                    ) : null}
+                  </Reveal>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </SectionContainer>
     </InteractiveSurface>

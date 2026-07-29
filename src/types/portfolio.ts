@@ -1,5 +1,12 @@
 export type PortfolioLens = "systems" | "ai";
 
+export type CredentialProvider =
+  | "linkedin"
+  | "master-of-project-academy"
+  | "kodekloud"
+  | "cisco"
+  | "inlustro";
+
 export type IconKey =
   | "java"
   | "python"
@@ -57,9 +64,11 @@ export interface CertificationEntry {
   title: string;
   year: string;
   category: string;
+  provider: CredentialProvider;
   issuer?: string;
   image?: string;
   verificationUrl?: string;
+  placeholder?: boolean;
 }
 
 export interface ProjectEntry {
