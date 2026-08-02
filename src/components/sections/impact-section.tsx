@@ -20,7 +20,7 @@ export function ImpactSection() {
           eyebrow="Selected impact"
           number="02"
           title="Outcomes, not ornamental metrics."
-          description="A concise record of production work drawn directly from my experience—reliability, operational leverage, and systems that scale."
+          description="A concise record of production work drawn directly from my experience - reliability, operational leverage, and systems that scale."
         />
         <WordStage text="impact" align="end" />
 
