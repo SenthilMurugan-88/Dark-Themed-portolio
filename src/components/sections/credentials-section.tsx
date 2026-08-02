@@ -23,6 +23,8 @@ import { portfolioConfig } from "@/config/portfolio";
 import { cn } from "@/lib/utils";
 
 export function CredentialsSection() {
+  const comingSoon = portfolioConfig.comingSoon?.credentials;
+  const hasCredentials = portfolioConfig.certifications.length > 0;
   const categories = useMemo(
     () => [
       "All",
@@ -86,15 +88,12 @@ export function CredentialsSection() {
         />
         <WordStage text="credentials" align="end" />
 
-        {portfolioConfig.comingSoon?.credentials ? (
-          <ComingSoonBanner
-            {...portfolioConfig.comingSoon.credentials}
-            className="mb-8"
-          />
+        {!hasCredentials && comingSoon ? (
+          <ComingSoonBanner {...comingSoon} />
         ) : null}
 
         <div
-          className="credential-filters"
+          className={hasCredentials ? "credential-filters" : "hidden"}
           role="group"
           aria-label="Filter credentials by category"
         >
@@ -136,7 +135,7 @@ export function CredentialsSection() {
           })}
         </div>
 
-        <div className="credential-carousel">
+        <div className={hasCredentials ? "credential-carousel" : "hidden"}>
           <div className="flex items-center justify-between gap-4">
             <p className="mono text-[0.62rem] uppercase tracking-[0.1em] text-[var(--color-muted)]">
               Drag, swipe, or use arrows

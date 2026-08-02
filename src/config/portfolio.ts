@@ -92,32 +92,8 @@ export const portfolioConfig: PortfolioConfig = {
       detail: "Across a continuous operational monitoring suite.",
     },
   ],
-  projects: [
-    {
-      title: "Project 01",
-      category: "Case study slot",
-      description:
-        "Project details, contribution, architecture, and outcomes will be added here.",
-      technologies: [],
-      status: "coming-soon",
-    },
-    {
-      title: "Project 02",
-      category: "Case study slot",
-      description:
-        "This space is ready for a second project, repository, and supporting media.",
-      technologies: [],
-      status: "coming-soon",
-    },
-    {
-      title: "Project 03",
-      category: "Case study slot",
-      description:
-        "A third configurable project slot is reserved for future work.",
-      technologies: [],
-      status: "coming-soon",
-    },
-  ],
+  // Add project entries here; the coming-soon banner hides automatically.
+  projects: [],
   experience: [
     {
       company: "Zoho",
@@ -240,48 +216,8 @@ export const portfolioConfig: PortfolioConfig = {
       lenses: ["systems"],
     },
   ],
-  certifications: [
-    {
-      title: "Add LinkedIn credential title",
-      year: "TBD",
-      category: "Data",
-      provider: "linkedin",
-      issuer: "LinkedIn Learning",
-      placeholder: true,
-    },
-    {
-      title: "Add project management credential title",
-      year: "TBD",
-      category: "Project Management",
-      provider: "master-of-project-academy",
-      issuer: "Master of Project Academy",
-      placeholder: true,
-    },
-    {
-      title: "Add KodeKloud credential title",
-      year: "TBD",
-      category: "Cloud & DevOps",
-      provider: "kodekloud",
-      issuer: "KodeKloud",
-      placeholder: true,
-    },
-    {
-      title: "Add Cisco credential title",
-      year: "TBD",
-      category: "Networking",
-      provider: "cisco",
-      issuer: "Cisco",
-      placeholder: true,
-    },
-    {
-      title: "Add Inlustro credential title",
-      year: "TBD",
-      category: "Data",
-      provider: "inlustro",
-      issuer: "Inlustro",
-      placeholder: true,
-    },
-  ],
+  // Add credential entries here; the coming-soon banner hides automatically.
+  certifications: [],
   openSource: {
     title: "Apache Tomcat contributor",
     description:

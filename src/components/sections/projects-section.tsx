@@ -23,6 +23,7 @@ import { portfolioConfig } from "@/config/portfolio";
 export function ProjectsSection() {
   const showcaseRef = useRef<HTMLDivElement>(null);
   const comingSoon = portfolioConfig.comingSoon?.projects;
+  const hasProjects = portfolioConfig.projects.length > 0;
 
   const scrollShowcase = (direction: -1 | 1) => {
     const showcase = showcaseRef.current;
@@ -59,11 +60,11 @@ export function ProjectsSection() {
         />
         <WordStage text="projects" align="start" />
 
-        {comingSoon ? (
-          <ComingSoonBanner {...comingSoon} className="mb-8" />
+        {!hasProjects && comingSoon ? (
+          <ComingSoonBanner {...comingSoon} />
         ) : null}
 
-        <div className="project-showcase">
+        <div className={hasProjects ? "project-showcase" : "hidden"}>
           <div className="project-showcase__toolbar">
             <p className="mono text-[0.62rem] uppercase tracking-[0.1em] text-[var(--color-muted)]">
               Scroll, swipe, or use controls
